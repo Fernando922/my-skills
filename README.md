@@ -11,16 +11,17 @@
 
 ## :rocket: Project
 
-:globe_with_meridians: 
-Project developed during Ignite Rocketseat 
+:globe_with_meridians:
+Project developed during Ignite Rocketseat
 
 ## Preview
 
 <div style="display: flex">
-<img src="./.github/mobile1.jpeg" width="250" />
+<img src="./.github/mobile1.png" width="250" />
 </div>
 
 ## :computer: Technologies
+
 - [React Native](https://facebook.github.io/react-native/)
 
 ## :thinking: How to use?
@@ -32,7 +33,6 @@ yarn (or npm i)
 ```sh
 yarn android
 ```
-
 
 ## :memo: License
 
