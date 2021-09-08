@@ -7,35 +7,45 @@ import {
   TextInput,
   Platform,
   FlatList,
-  StatusBar,
 } from "react-native";
 import { Button } from "../components/Button";
+import showCurrentGreeting from "../utils/showCurrentGreeting";
 import { SkillCard } from "../components/SkillCard";
+
+interface SkillData {
+  id: string;
+  name: string;
+}
 
 export function Home() {
   const [newSkill, setNewSkill] = useState("");
-  const [mySkills, setMySkills] = useState([]);
+  const [mySkills, setMySkills] = useState<SkillData[]>([]);
   const [greeting, setGreeting] = useState("");
 
   function handleAddNewSkill() {
-    setMySkills([...mySkills, newSkill]);
+    if (!newSkill) {
+      return;
+    }
+
+    const data = {
+      id: String(new Date().getTime()),
+      name: newSkill,
+    };
+
+    setMySkills([...mySkills, data]);
     setNewSkill("");
   }
 
-  function defineCorrectGreeting() {
-    const currentHour = new Date().getHours();
+  function handleRemoveSkill(id: string) {
+    setMySkills((oldState) => oldState.filter((skill) => skill.id != id));
+  }
 
-    if (currentHour < 12) {
-      setGreeting("Good morning!");
-    } else if (currentHour >= 12 && currentHour < 18) {
-      setGreeting("Good afternoon!");
-    } else {
-      setGreeting("Good evening!");
-    }
+  function defineCurrentGreeting() {
+    setGreeting(showCurrentGreeting);
   }
 
   useEffect(() => {
-    defineCorrectGreeting();
+    defineCurrentGreeting();
   }, []);
 
   return (
@@ -53,14 +63,19 @@ export function Home() {
         onSubmitEditing={handleAddNewSkill}
       />
 
-      <Button onPress={handleAddNewSkill} />
+      <Button onPress={handleAddNewSkill} title="Add" />
 
       <Text style={[styles.title, { marginVertical: 50 }]}>My Skills</Text>
 
       <FlatList
         data={mySkills}
-        renderItem={({ item }) => <SkillCard skill={item} />}
-        keyExtractor={(item) => item}
+        renderItem={({ item }) => (
+          <SkillCard
+            skill={item.name}
+            onPress={() => handleRemoveSkill(item.id)}
+          />
+        )}
+        keyExtractor={(item) => item.id}
       />
     </View>
   );
@@ -83,7 +98,6 @@ const styles = StyleSheet.create({
     padding: Platform.OS === "ios" ? 15 : 10,
     color: "#FFF",
     fontSize: 18,
-    padding: 15,
     marginTop: 30,
     borderRadius: 7,
   },
